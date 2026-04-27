@@ -8,6 +8,7 @@
   ],
   "routes": [
     { "handle": "filesystem" },
+    { "src": "/style.css", "dest": "/public/style.css" },
     { "src": "/(.*)", "dest": "app.py" }
   ]
 }
