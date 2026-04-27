@@ -69,7 +69,8 @@ app.config['MAX_CONTENT_LENGTH'] = MAX_UPLOAD_BYTES
 def serve_static(filename):
     """Serve arquivos da pasta public/ (CSS, JS, imagens)."""
     from flask import send_from_directory
-    return send_from_directory(BASE_DIR, filename)
+    public_dir = os.path.join(BASE_DIR, 'public')
+    return send_from_directory(public_dir, filename)
 
 
 # ---------------------------------------------------------------------------
