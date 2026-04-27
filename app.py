@@ -57,20 +57,9 @@ BLOB_TOKEN = os.environ.get('BLOB_READ_WRITE_TOKEN')
 MAX_UPLOAD_MB = 4
 MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
 
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__, template_folder='templates', static_folder='public', static_url_path='')
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-only-change-in-production')
 app.config['MAX_CONTENT_LENGTH'] = MAX_UPLOAD_BYTES
-
-
-# ---------------------------------------------------------------------------
-# Arquivos estáticos (pasta public/)
-# ---------------------------------------------------------------------------
-@app.route('/<path:filename>')
-def serve_static(filename):
-    """Serve arquivos da pasta public/ (CSS, JS, imagens)."""
-    from flask import send_from_directory
-    public_dir = os.path.join(BASE_DIR, 'public')
-    return send_from_directory(public_dir, filename)
 
 
 # ---------------------------------------------------------------------------
@@ -171,16 +160,6 @@ def format_date(value):
         return dt.strftime('%d/%m/%Y %H:%M')
     except ValueError:
         return str(value)[:16]
-
-
-# ---------------------------------------------------------------------------
-# Rota auxiliar — serve o CSS em desenvolvimento local.
-# Em produção (Vercel), o arquivo em /public/style.css é servido pela CDN
-# antes desta rota ser invocada.
-# ---------------------------------------------------------------------------
-@app.route('/style.css')
-def style_css():
-    return send_from_directory(os.path.join(BASE_DIR, 'public'), 'style.css')
 
 
 # ---------------------------------------------------------------------------

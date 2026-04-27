@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     {
-      "src": "public/",
+      "src": "public/**",
       "use": "@vercel/static"
     },
     {
@@ -11,13 +11,7 @@
     }
   ],
   "routes": [
-    {
-      "src": "/style.css",
-      "dest": "public/style.css"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "app.py"
-    }
+    { "handle": "filesystem" },
+    { "src": "/(.*)", "dest": "app.py" }
   ]
 }
