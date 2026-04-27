@@ -57,9 +57,14 @@ BLOB_TOKEN = os.environ.get('BLOB_READ_WRITE_TOKEN')
 MAX_UPLOAD_MB = 4
 MAX_UPLOAD_BYTES = MAX_UPLOAD_MB * 1024 * 1024
 
-app = Flask(__name__, template_folder='templates', static_folder='public', static_url_path='')
+app = Flask(__name__, template_folder='templates')
 app.secret_key = os.environ.get('SECRET_KEY', 'dev-only-change-in-production')
 app.config['MAX_CONTENT_LENGTH'] = MAX_UPLOAD_BYTES
+
+
+@app.route('/style.css')
+def serve_css():
+    return send_from_directory(os.path.join(BASE_DIR, 'public'), 'style.css')
 
 
 # ---------------------------------------------------------------------------
