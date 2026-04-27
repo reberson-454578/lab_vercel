@@ -2,14 +2,16 @@
   "version": 2,
   "builds": [
     {
+      "src": "static/**",
+      "use": "@vercel/static"
+    },
+    {
       "src": "app.py",
-      "use": "@vercel/python",
-      "config": {
-        "includeFiles": ["templates/**", "public/**"]
-      }
+      "use": "@vercel/python"
     }
   ],
   "routes": [
+    { "handle": "filesystem" },
     { "src": "/(.*)", "dest": "app.py" }
   ]
 }

@@ -62,11 +62,6 @@ app.secret_key = os.environ.get('SECRET_KEY', 'dev-only-change-in-production')
 app.config['MAX_CONTENT_LENGTH'] = MAX_UPLOAD_BYTES
 
 
-@app.route('/style.css')
-def serve_css():
-    return send_from_directory(os.path.join(BASE_DIR, 'public'), 'style.css')
-
-
 # ---------------------------------------------------------------------------
 # Banco de dados (Postgres)
 # ---------------------------------------------------------------------------
