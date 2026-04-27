@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Painel do Professor{% endblock %}
+{% block content %}
+<div class="stats-row">
+    <div class="stat">
+        <span class="stat-label">Alunos</span>
+        <span class="stat-value">{{ students|length }}</span>
+    </div>
+    <div class="stat">
+        <span class="stat-label">Arquivos da Turma</span>
+        <span class="stat-value">{{ admin_files|length }}</span>
+    </div>
+    <div class="stat">
+        <span class="stat-label">Envios dos Alunos</span>
+        <span class="stat-value">{{ student_files|length }}</span>
+    </div>
+    <div class="stat">
+        <span class="stat-label">Espaço usado</span>
+        <span class="stat-value">{{ format_size(total_size) }}</span>
+    </div>
+</div>
+
+<section class="section">
+    <div class="section-header">
+        <div>
+            <h2>Materiais para a Turma</h2>
+            <p class="muted">Esses arquivos ficam visíveis para todos os alunos</p>
+        </div>
+        <span class="count-pill">{{ admin_files|length }}</span>
+    </div>
+
+    <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data" class="upload-form">
+        <input type="file" name="file" required>
+        <input type="hidden" name="is_admin_file" value="1">
+        <button type="submit" class="btn-primary">Publicar para a Turma</button>
+    </form>
+    <p class="hint">Limite de {{ max_upload_mb }} MB por arquivo.</p>
+
+    {% if admin_files %}
+    <ul class="file-list">
+        {% for f in admin_files %}
+        <li class="file-item">
+            <div class="file-icon icon-class">{{ f.file_type[:4]|upper or 'ARQ' }}</div>
+            <div class="file-info">
+                <span class="file-name">{{ f.original_name }}</span>
+                <span class="file-meta">{{ format_size(f.file_size) }} · {{ format_date(f.uploaded_at) }}</span>
+            </div>
+            <div class="file-actions">
+                <a href="{{ url_for('download', file_id=f.id) }}" class="btn-secondary">Baixar</a>
+                <form method="POST" action="{{ url_for('delete_file', file_id=f.id) }}" class="inline-form" onsubmit="return confirm('Excluir este material da turma?')">
+                    <button type="submit" class="btn-danger">Excluir</button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty">Nenhum material publicado ainda.</p>
+    {% endif %}
+</section>
+
+<section class="section">
+    <div class="section-header">
+        <div>
+            <h2>Arquivos dos Alunos</h2>
+            <p class="muted">Trabalhos enviados pelos alunos</p>
+        </div>
+        <span class="count-pill">{{ student_files|length }}</span>
+    </div>
+    {% if student_files %}
+    <ul class="file-list">
+        {% for f in student_files %}
+        <li class="file-item">
+            <div class="file-icon">{{ f.file_type[:4]|upper or 'ARQ' }}</div>
+            <div class="file-info">
+                <span class="file-name">{{ f.original_name }}</span>
+                <span class="file-meta">por <strong>{{ f.username }}</strong> · {{ format_size(f.file_size) }} · {{ format_date(f.uploaded_at) }}</span>
+            </div>
+            <div class="file-actions">
+                <a href="{{ url_for('download', file_id=f.id) }}" class="btn-secondary">Baixar</a>
+                <form method="POST" action="{{ url_for('delete_file', file_id=f.id) }}" class="inline-form" onsubmit="return confirm('Excluir este arquivo?')">
+                    <button type="submit" class="btn-danger">Excluir</button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty">Nenhum aluno enviou arquivos ainda.</p>
+    {% endif %}
+</section>
+
+<section class="section">
+    <div class="section-header">
+        <div>
+            <h2>Alunos Cadastrados</h2>
+            <p class="muted">Gerencie quem tem acesso ao sistema</p>
+        </div>
+        <span class="count-pill">{{ students|length }}</span>
+    </div>
+    {% if students %}
+    <ul class="user-list">
+        {% for s in students %}
+        <li class="user-item">
+            <div class="user-avatar">{{ s.username[:1]|upper }}</div>
+            <div class="file-info">
+                <span class="user-name">{{ s.username }}</span>
+                <span class="file-meta">cadastrado em {{ format_date(s.created_at) }}</span>
+            </div>
+            <form method="POST" action="{{ url_for('delete_user', user_id=s.id) }}" class="inline-form" onsubmit="return confirm('Remover {{ s.username }} e todos os seus arquivos? Essa ação não pode ser desfeita.')">
+                <button type="submit" class="btn-danger">Remover</button>
+            </form>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty">Nenhum aluno cadastrado. Compartilhe o link de cadastro com a turma.</p>
+    {% endif %}
+</section>
+{% endblock %}

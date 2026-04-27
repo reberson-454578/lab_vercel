@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Cadastrar{% endblock %}
+{% block content %}
+<div class="auth-card">
+    <h1>Cadastro</h1>
+    <p class="subtitle">Crie seu acesso de aluno</p>
+    <form method="POST" action="{{ url_for('register') }}">
+        <label>Nome de usuário
+            <input type="text" name="username" required autofocus autocomplete="username">
+        </label>
+        <label>Senha (mínimo 4 caracteres)
+            <input type="password" name="password" required minlength="4" autocomplete="new-password">
+        </label>
+        <button type="submit" class="btn-primary btn-block">Cadastrar</button>
+    </form>
+    <p class="auth-link">Já tem conta? <a href="{{ url_for('login') }}">Entrar</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+# Variáveis de ambiente — NUNCA enviar para o git
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+env/
+ENV/
+
+# Vercel
+.vercel
+.now
+
+# Banco de dados local (caso teste com SQLite em algum momento)
+*.db
+*.sqlite
+*.sqlite3
+
+# Uploads locais (não usados nesta versão, mas por segurança)
+uploads/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+.DS_Store

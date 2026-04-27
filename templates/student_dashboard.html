@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Meu Painel{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="section-header">
+        <div>
+            <h2>Materiais da Aula</h2>
+            <p class="muted">Arquivos enviados pelo professor para a turma</p>
+        </div>
+        <span class="count-pill">{{ class_files|length }}</span>
+    </div>
+    {% if class_files %}
+    <ul class="file-list">
+        {% for f in class_files %}
+        <li class="file-item">
+            <div class="file-icon icon-class">{{ f.file_type[:4]|upper or 'ARQ' }}</div>
+            <div class="file-info">
+                <span class="file-name">{{ f.original_name }}</span>
+                <span class="file-meta">{{ format_size(f.file_size) }} · enviado em {{ format_date(f.uploaded_at) }}</span>
+            </div>
+            <div class="file-actions">
+                <a href="{{ url_for('download', file_id=f.id) }}" class="btn-secondary">Baixar</a>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty">Nenhum material disponível ainda. Aguarde o professor enviar.</p>
+    {% endif %}
+</section>
+
+<section class="section">
+    <div class="section-header">
+        <div>
+            <h2>Meus Arquivos</h2>
+            <p class="muted">Trabalhos que você enviou para o professor</p>
+        </div>
+        <span class="count-pill">{{ my_files|length }}</span>
+    </div>
+
+    <form method="POST" action="{{ url_for('upload') }}" enctype="multipart/form-data" class="upload-form">
+        <input type="file" name="file" id="file-student" required>
+        <button type="submit" class="btn-primary">Enviar Arquivo</button>
+    </form>
+    <p class="hint">Limite de {{ max_upload_mb }} MB por arquivo.</p>
+
+    {% if my_files %}
+    <ul class="file-list">
+        {% for f in my_files %}
+        <li class="file-item">
+            <div class="file-icon">{{ f.file_type[:4]|upper or 'ARQ' }}</div>
+            <div class="file-info">
+                <span class="file-name">{{ f.original_name }}</span>
+                <span class="file-meta">{{ format_size(f.file_size) }} · {{ format_date(f.uploaded_at) }}</span>
+            </div>
+            <div class="file-actions">
+                <a href="{{ url_for('download', file_id=f.id) }}" class="btn-secondary">Baixar</a>
+                <form method="POST" action="{{ url_for('delete_file', file_id=f.id) }}" class="inline-form" onsubmit="return confirm('Excluir este arquivo?')">
+                    <button type="submit" class="btn-danger">Excluir</button>
+                </form>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p class="empty">Você ainda não enviou nenhum arquivo.</p>
+    {% endif %}
+</section>
+{% endblock %}
